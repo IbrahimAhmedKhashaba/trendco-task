@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Category extends Model
 {
@@ -13,6 +14,11 @@ class Category extends Model
     use HasTranslations;
     public $translatable = ['name' , 'description'];
     protected $fillable = ['name' , 'description' , 'status'];
+
+    public function image(): MorphOne
+    {
+        return $this->morphOne(Image::class, 'imageable');
+    }
 
     public function products(){
         return $this->hasMany(Product::class);
