@@ -3,24 +3,29 @@
 namespace App\Http\Controllers\Api\Product;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductRequest;
+use App\Interfaces\Services\Product\ProductServiceInterface;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    private $productService;
+    public function __construct(ProductServiceInterface $productService){
+        $this->productService = $productService;
+    }
     public function index()
     {
         //
+        return $this->productService->getAllProducts();
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
         //
+        return $this->productService->storeProduct($request->all());
     }
 
     /**
@@ -29,6 +34,7 @@ class ProductController extends Controller
     public function show(string $id)
     {
         //
+        return $this->productService->getProductById($id);
     }
 
     /**
@@ -37,6 +43,7 @@ class ProductController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        return $this->productService->updateProductById($request->all() , $id);
     }
 
     /**
@@ -45,5 +52,6 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         //
+        return $this->productService->destroyProductById($id);
     }
 }

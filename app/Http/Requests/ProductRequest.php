@@ -11,7 +11,7 @@ class ProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +21,40 @@ class ProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $data = [
             //
+            'name' => 'required|array',
+            'name.*' => 'required|string|max:255',
+            'description' => 'required|array',
+            'description.*' => 'required|string|max:255',
+            'images' => 'required|array',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'categories' => 'required|array',
+            'categories.*' => 'required|exists:categories,id',
+            'price' => 'required|numeric',
+            'discounted_price' => 'nullable|numeric',
+            'quantity' => 'required|numeric',
+            'status' => 'required|in:active,inactive',
         ];
+
+        if(request()->isMethod('put')){
+            $data['images'] = 'nullable|array';
+            $data['categories'] = 'nullable|array';
+        }
+
+        return $data;
+    }
+
+    public function messages(): array
+    {
+        $data = [
+            'name.required' => 'Name is required',
+            'name.array' => 'Name must be an array',
+            'name.unique' => 'Name must be unique',
+            'name.*.required' => 'Name is required',
+            'status' => 'required|in:active,inactive',
+        ];
+
+        return $data;
     }
 }

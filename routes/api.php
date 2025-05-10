@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Auth\SocialiteController;
 use App\Http\Controllers\Api\Category\CategoryController;
+use App\Http\Controllers\Api\Product\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,7 @@ Route::prefix('/auth')->group(function () {
 });
 
 Route::apiResource('categories', CategoryController::class);
+Route::apiResource('products', ProductController::class);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
