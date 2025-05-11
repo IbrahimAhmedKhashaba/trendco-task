@@ -20,11 +20,9 @@ class EmailAuthService implements AuthStrategyInterface{
     {
         $user = $this->emailAuthRepository->register($data);
         $user->notify(new CustomVerifyEmail());
-        $token = $user->createToken('email')->plainTextToken;
 
         return [
             'user' => $user,
-            'token' => $token,
         ];
     }
 
