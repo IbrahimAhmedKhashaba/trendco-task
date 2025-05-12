@@ -11,18 +11,22 @@ class OrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
-        return [
-            //
+        $data = [
+            'city_name' => ['required', 'string', 'max:255'],
+            'address_name' => ['required', 'string', 'max:255'],
+            'building_number' => ['required', 'string', 'max:50'],
+            'payment_method' => ['required', 'in:stripe,paypal,delivery'],
         ];
+
+        if(request()->isMethod('put')){
+            $data = [];
+            $data['order_status'] = ['required', 'in:pending, shipped, delivered'];
+        }
+        return $data;
     }
 }

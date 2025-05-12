@@ -3,24 +3,31 @@
 namespace App\Http\Controllers\Api\Order;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderRequest;
+use App\Services\Order\OrderService;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    private $orderService;
+
+    public function __construct(OrderService $orderService)
+    {
+        $this->orderService = $orderService;
+    }
     public function index()
     {
         //
+        return $this->orderService->getAllOrders();
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
         //
+        return $this->orderService->storeOrder($request);
     }
 
     /**
@@ -29,6 +36,7 @@ class OrderController extends Controller
     public function show(string $id)
     {
         //
+        return $this->orderService->getOrderById($id);
     }
 
     /**
@@ -37,6 +45,7 @@ class OrderController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        return $this->orderService->updateOrderStatusById($request->all(), $id);
     }
 
     /**
