@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class OrderRequest extends FormRequest
 {
@@ -28,5 +30,12 @@ class OrderRequest extends FormRequest
             $data['order_status'] = ['required', 'in:pending, shipped, delivered'];
         }
         return $data;
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->apiErrorResponse('Validation errors' , 422 , [
+            'errors' => $validator->errors(),
+        ]));
     }
 }

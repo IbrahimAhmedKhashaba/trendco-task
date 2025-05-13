@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class RegisterRequest extends FormRequest
 {
@@ -19,7 +21,7 @@ class RegisterRequest extends FormRequest
             ];
         } else {
             $data = [
-                'name' => 'required|string|max:255',
+                __('validation.name') => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:6|confirmed|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).+$/',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -27,5 +29,12 @@ class RegisterRequest extends FormRequest
             ];
         }
         return $data;
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->apiErrorResponse('Validation errors' , 422 , [
+            'errors' => $validator->errors(),
+        ]));
     }
 }

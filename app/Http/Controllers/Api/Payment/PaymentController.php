@@ -21,5 +21,7 @@ class PaymentController extends Controller
         return $this->factory->createPayment($this->method)->createPayment();
     }
 
-    
+    public function handle(Request $request){
+        return $this->factory->createPayment($this->method)->handle($request);
+    }
 }

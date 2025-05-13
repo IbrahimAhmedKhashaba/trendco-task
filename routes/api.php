@@ -13,41 +13,42 @@ use App\Http\Controllers\Api\Product\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('/auth')->group(function () {
-    Route::post('register', [RegisterController::class, 'register']);
-    Route::get('redirect/{provider}', [SocialiteController::class, 'getSocialiteLink']);
-    Route::post('login', [LoginController::class, 'login']);
-    Route::post('logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
-    Route::get('callback', [RegisterController::class, 'getSocialiteUser']);
+Route::middleware('sel_locale')->group(function () {
+    Route::prefix('/auth')->group(function () {
+        Route::post('register', [RegisterController::class, 'register']);
+        Route::get('redirect/{provider}', [SocialiteController::class, 'getSocialiteLink']);
+        Route::post('login', [LoginController::class, 'login']);
+        Route::post('logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
+        Route::get('callback', [RegisterController::class, 'getSocialiteUser']);
 
-    Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-        ->middleware(['signed'])
-        ->name('verification.verify');
+        Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+            ->middleware(['signed'])
+            ->name('verification.verify');
 
-    Route::post('email/resend', [VerificationController::class, 'resend'])
-        ->middleware('auth:sanctum');
+        Route::post('email/resend', [VerificationController::class, 'resend'])
+            ->middleware('auth:sanctum');
+    });
+
+
+
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::post('/cart', [CartController::class, 'add']);
+        Route::get('/cart', [CartController::class, 'index']);
+        Route::put('{rowId}/cart', [CartController::class, 'update']);
+        Route::delete('{rowId}/cart', [CartController::class, 'remove']);
+        Route::delete('/cart/clear', [CartController::class, 'clear']);
+
+        Route::apiResource('categories', CategoryController::class);
+        Route::apiResource('products', ProductController::class);
+        Route::apiResource('orders', OrderController::class)->except(['destroy']);
+
+        Route::get('/paypal/create-payment', [PaymentController::class, 'createPayment']);
+    });
+
+    Route::post('/payment/handle', [PaymentController::class, 'handle']);
+
+
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    })->middleware(['auth:sanctum', 'verified']);
 });
-
-
-
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('/cart', [CartController::class, 'add']);
-    Route::get('/cart', [CartController::class, 'index']);
-    Route::put('{rowId}/cart', [CartController::class, 'update']);
-    Route::delete('{rowId}/cart', [CartController::class, 'remove']);
-    Route::delete('/cart/clear', [CartController::class, 'clear']);
-
-    Route::apiResource('categories', CategoryController::class);
-    Route::apiResource('products', ProductController::class);
-    Route::apiResource('orders', OrderController::class)->except(['destroy']);
-
-    Route::get('/paypal/create-payment', [PaymentController::class, 'createPayment']);
-});
-
-Route::post('/paypal/handle', [PaypalController::class, 'handle']);
-Route::get('/paypal/cancel', [PaypalController::class, 'cancel'])->name('paypal.cancel');
-Route::get('/paypal/success/{id}', [PaypalController::class, 'success'])->name('paypal.success');
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware(['auth:sanctum', 'verified']);

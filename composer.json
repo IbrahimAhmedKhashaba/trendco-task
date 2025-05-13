@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.9",
         "spatie/laravel-translatable": "^6.11",
         "srmklive/paypal": "^3.0",
+        "stripe/stripe-php": "^17.2",
         "surfsidemedia/shoppingcart": "^2.0"
     },
     "require-dev": {

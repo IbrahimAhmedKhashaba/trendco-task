@@ -4,12 +4,11 @@
 namespace App\Services\Payment;
 
 use App\Interfaces\Services\Payment\PaymentStrategyInterface;
-use App\Interfaces\Services\Payment\PaypalInterface;
 use App\Models\User;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Illuminate\Support\Facades\Crypt;
 
-class PaypalService implements PaymentStrategyInterface, PaypalInterface
+class PaypalService implements PaymentStrategyInterface
 {
     public function createPayment()
     {
@@ -31,8 +30,8 @@ class PaypalService implements PaymentStrategyInterface, PaypalInterface
                 ]
             ],
             "application_context" => [
-                "return_url" => route('paypal.success', Crypt::encryptString($user->order->id)),
-                "cancel_url" => route('paypal.cancel'),
+                "return_url" => env('PAYPAL_SUCCESS_URL'),
+                "cancel_url" => env('PAYPAL_ERROR_URL'),
             ]
         ]);
 
@@ -55,13 +54,14 @@ class PaypalService implements PaymentStrategyInterface, PaypalInterface
         return auth()->user();
     }
 
-    public function success($request, $id)
+    public function handle($request)
     {
-        return Crypt::decryptString($id);
-    }
-
-    public function cancel()
-    {
-        return "cancel";
+        $payload = $request->getContent();
+        $data = json_decode($payload, true);
+        $orderId = $data['resource']['purchase_units'][0]['reference_id'];
+        $order = Order::find($orderId);
+        $query = $order->update(['payment_status' => 'paid']);
+        Log::info('query' , [$query]);
+        return response()->json(['status' => 'success'], 200);
     }
 }
