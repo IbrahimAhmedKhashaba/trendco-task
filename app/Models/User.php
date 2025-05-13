@@ -57,8 +57,8 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->notify(new CustomVerifyEmail);
     }
 
-    public function orders(){
-        return $this->hasMany(Order::class);
+    public function order(){
+        return $this->hasOne(Order::class);
     }
 
     public function image(): MorphOne

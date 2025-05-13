@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\Auth\SocialiteController;
 use App\Http\Controllers\Api\Cart\CartController;
 use App\Http\Controllers\Api\Category\CategoryController;
 use App\Http\Controllers\Api\Order\OrderController;
+use App\Http\Controllers\Api\Payment\PaymentController;
+use App\Http\Controllers\Api\Payment\Paypal\PaypalController;
 use App\Http\Controllers\Api\Product\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -39,11 +41,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('products', ProductController::class);
     Route::apiResource('orders', OrderController::class)->except(['destroy']);
 
-//     Route::post('/paypal/create-payment', [PayPalController::class, 'createPayment']);
-// Route::get('/paypal/success', [PayPalController::class, 'success'])->name('paypal.success');
-// Route::get('/paypal/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
+    Route::get('/paypal/create-payment', [PaymentController::class, 'createPayment']);
 });
 
+Route::post('/paypal/handle', [PaypalController::class, 'handle']);
+Route::get('/paypal/cancel', [PaypalController::class, 'cancel'])->name('paypal.cancel');
+Route::get('/paypal/success/{id}', [PaypalController::class, 'success'])->name('paypal.success');
 
 Route::get('/user', function (Request $request) {
     return $request->user();

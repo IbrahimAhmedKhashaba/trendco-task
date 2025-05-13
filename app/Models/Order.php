@@ -24,7 +24,7 @@ class Order extends Model
     {
         return Attribute::make(
             get: fn (string $value) => $value == '1' ? 'paid' : 'not paid',
-            set: fn (string $value) => $value == 'active' ? 1 : 0,
+            set: fn (string $value) => $value == 'paid' ? 1 : 0,
         );
     }
 

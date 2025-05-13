@@ -19,12 +19,11 @@ class RegisterController extends Controller
     //
     use ImageManagementTrait;
 
-    private $factory, $provider , $cartRepository;
+    private $factory, $provider;
 
-    public function __construct(RegistrationFactoryInterface $factory , CartRepositoryInterface  $cartRepository)
+    public function __construct(RegistrationFactoryInterface $factory)
     {
         $this->factory = $factory;
-        $this->cartRepository = $cartRepository;
         $this->provider = request()->provider ?? 'email';
     }
 

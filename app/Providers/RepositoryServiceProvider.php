@@ -17,6 +17,7 @@ use App\Interfaces\Repositories\Product\ProductRepositoryInterface;
 use App\Interfaces\Services\Cart\CartServiceInterface;
 use App\Interfaces\Services\Category\CategoryServiceInterface;
 use App\Interfaces\Services\Order\OrderServiceInterface;
+use App\Interfaces\Services\Payment\PaypalInterface;
 use App\Interfaces\Services\Product\ProductServiceInterface;
 use App\Repositories\Auth\EmailAuthRepository;
 use App\Repositories\Auth\SocialiteAuthRepository;
@@ -29,6 +30,7 @@ use App\Repositories\Product\ProductRepository;
 use App\Services\Cart\CartService;
 use App\Services\Category\CategoryService;
 use App\Services\Order\OrderService;
+use App\Services\Payment\PaypalService;
 use App\Services\Product\ProductService;
 use Illuminate\Support\ServiceProvider;
 
@@ -54,6 +56,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(PaymentFactoryInterface::class, PaymentFactory::class);
         $this->app->bind(PayPalRepositoryInterface::class, PayPalRepository::class);
         $this->app->bind(StripeRepositoryInterface::class, StripeRepository::class);
+        $this->app->bind(PaypalInterface::class, PaypalService::class);
     }
 
     /**
