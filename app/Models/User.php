@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\Auth\CustomVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -64,5 +65,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function image(): MorphOne
     {
         return $this->morphOne(Image::class, 'imageable');
+    }
+
+    public function scopeAdmin(Builder $query): Builder
+    {
+        return $query->where('is_admin', '1');
+    }
+
+    public function scopeUser(Builder $query): Builder
+    {
+        return $query->where('is_admin', '0');
     }
 }

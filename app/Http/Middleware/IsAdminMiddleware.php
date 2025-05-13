@@ -15,6 +15,11 @@ class IsAdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $user = $request->user();
+
+        if (!$user || !$user->is_admin) {
+            return response()->apiErrorResponse('Unauthorized. Admins only.', 403);
+        }
         return $next($request);
     }
 }
