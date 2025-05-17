@@ -17,9 +17,9 @@ return new class extends Migration
             $table->text('description');
             $table->decimal('price' , 8 , 2);
             $table->boolean('has_discount')->default(0);
-            $table->decimal(column: 'discounted_price' , 8 , 2)->nullable();
+            $table->decimal('discounted_price' , 8 , 2)->nullable();
             $table->integer('quantity')->default(0);
-            $table->boolean('status')->default(1);
+            $table->boolean('status')->default(1)->index();
             $table->timestamps();
         });
     }

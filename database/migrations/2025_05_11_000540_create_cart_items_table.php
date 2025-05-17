@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('cart_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('row_id');
+            $table->string('row_id')->index();
             $table->unsignedBigInteger('product_id');
             $table->string('name');
             $table->integer('qty');
             $table->decimal('price', 10, 2);
             $table->json('options')->nullable();
-            $table->unique(['user_id', 'row_id']);
+            $table->unique(['user_id', 'row_id'])->index();
             $table->timestamps();
         });
     }
