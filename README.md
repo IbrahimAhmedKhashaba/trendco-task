@@ -1,4 +1,5 @@
 🔐 Authentication System
+
 The authentication system is designed with flexibility and extensibility in mind using key design patterns:
 
 Strategy Pattern: Used to support multiple authentication methods, including traditional email/password login and social media login (e.g., Google). This allows adding new providers like Facebook without modifying the core authentication logic.
@@ -36,6 +37,7 @@ This section is designed to empower admins with all necessary tools for effectiv
 
 
 👤 User Features
+
 The User module offers a seamless and intuitive experience for customers to interact with the platform:
 
 Browse Categories and Products: Users can easily explore all available product categories and view detailed information about each product.
@@ -50,6 +52,7 @@ This module focuses on usability and security, providing users with all the tool
 
 
 💳 Payment Gateways & Application Architecture
+
 Payment Gateways Handling:
 Payment processing is implemented using the Strategy and Factory design patterns. This approach provides flexibility to easily add or switch payment gateways (e.g., PayPal, Stripe) in the future without modifying existing code.
 
@@ -65,27 +68,62 @@ This clean and modular architecture ensures the codebase remains scalable, maint
 The application employs Laravel's powerful features for handling background tasks and user notifications efficiently:
 
 Jobs & Queues:
+
 Time-consuming tasks like sending emails or processing heavy operations are offloaded to background Jobs using Laravel's Queue system, improving app responsiveness and user experience.
 
 Events & Listeners:
+
 Business events trigger Events that are handled by Listeners to decouple different parts of the application and promote clean, maintainable code.
 
 Notifications:
+
 Users receive timely notifications via multiple channels (email, database, etc.) to keep them informed about important actions like email verification, order updates, and more.
 
 This architecture ensures smooth, scalable, and user-friendly operations without blocking the main application flow.
 
-⚙️ Asynchronous Processing & Notifications
-The application employs Laravel's powerful features for handling background tasks and user notifications efficiently:
+⚙️ Installation & Setup
+This section guides you through setting up the project and configuring essential integrations:
 
-Jobs & Queues:
-Time-consuming tasks like sending emails or processing heavy operations are offloaded to background Jobs using Laravel's Queue system, improving app responsiveness and user experience.
+Queue Configuration:
+The application uses Laravel’s database queue driver to handle background jobs reliably. Make sure to run the necessary migrations to create the jobs table:
 
-Events & Listeners:
-Business events trigger Events that are handled by Listeners to decouple different parts of the application and promote clean, maintainable code.
+bash
+نسخ
+تحرير
+php artisan queue:table
+php artisan migrate
+Then, start the queue worker:
 
-Notifications:
-Users receive timely notifications via multiple channels (email, database, etc.) to keep them informed about important actions like email verification, order updates, and more.
+bash
+نسخ
+تحرير
+php artisan queue:work
+Payment Gateways Integration:
+The system integrates both PayPal and Stripe payment gateways. Configure the API credentials in the .env file to enable smooth payment processing.
 
-This architecture ensures smooth, scalable, and user-friendly operations without blocking the main application flow.
+Social Authentication:
+Google OAuth integration is set up to allow users to log in using their Google accounts. Proper credentials must be configured in the .env file and on the Google Developer Console.
+
+General Setup:
+
+Clone the repository.
+
+Run composer install to install PHP dependencies.
+
+Set up your .env file with database and service credentials.
+
+Run database migrations and seeders:
+
+bash
+نسخ
+تحرير
+php artisan migrate --seed
+Serve the application:
+
+bash
+نسخ
+تحرير
+php artisan serve
+Following these steps will get your environment ready with all the necessary features working seamlessly.
+
 
