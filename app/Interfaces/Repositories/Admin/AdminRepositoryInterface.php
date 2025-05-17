@@ -1,11 +1,14 @@
-<?php 
+<?php
 
 namespace App\Interfaces\Repositories\Admin;
 
-interface AdminRepositoryInterface{
-    public function index();
-    public function show($id);
-    public function store($request);
-    public function update($request);
-    public function destroy();
+use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
+
+
+interface AdminRepositoryInterface
+{
+    public function index(): Collection;
+    public function show($id): ?User;
+    public function store($data): ?User;
 }

@@ -18,16 +18,19 @@ class CategoryService implements CategoryServiceInterface
         $categories = $this->categoryRepository->getAllCategories();
         return response()->apiSuccessResponse([
             'categories' => CategoryResource::collection($categories),
-        ], 'Categories data');
+        ], __('msgs.category_all_data'));
     }
     public function getCategoryById($id): JsonResponse {
         try {
             $Category = $this->categoryRepository->getCategoryById($id);
+            if(!$Category){
+                return response()->apiErrorResponse(__('msgs.category_not_found'), 404);
+            }
             return response()->apiSuccessResponse([
                 'category' => new CategoryResource($Category),
-            ], 'Category data');
+            ], __('msgs.category_data'));
         } catch (\Exception $e) {
-            return response()->apiErrorResponse('Category not found', 404);
+            return response()->apiErrorResponse(__('msgs.internal_erroe'), 404);
         }
     }
     public function storeCategory(array $data): JsonResponse {
@@ -35,35 +38,35 @@ class CategoryService implements CategoryServiceInterface
             $category = $this->categoryRepository->storeCategory($data);
             return response()->apiSuccessResponse([
                 'category' => new CategoryResource($category),
-            ], 'Category Created Successfully' , 201);
+            ], __('msgs.category_created') , 201);
         } catch (\Exception $e) {
-            return response()->apiErrorResponse('Category not created, Try again!', 500);
+            return response()->apiErrorResponse(__('msgs.internal_error'), 500);
         }
     }
     public function updateCategoryById(array $data, $id): JsonResponse {
         try {
             $category = $this->categoryRepository->getCategoryById($id);
             if(!$category){
-                return response()->apiErrorResponse('Category Not Found' , 404);
+                return response()->apiErrorResponse(__('msgs.category_not_found') , 404);
             }
             $category = $this->categoryRepository->updateCategory($category, $data);
             return response()->apiSuccessResponse([
                 'category' => new CategoryResource($category),
-            ], 'Category Updated Successfully' , 200);
+            ], __('msgs.category_created') , 200);
         } catch (\Exception $e) {
-            return response()->apiErrorResponse('Category not Updated, Try again!', 500);
+            return response()->apiErrorResponse(__('msgs.internal_error'), 500);
         }
     }
     public function destroyCategoryById($id): JsonResponse{
         try {
             $category = $this->categoryRepository->getCategoryById($id);
             if(!$category){
-                return response()->apiErrorResponse('Category Not Found' , 404);
+                return response()->apiErrorResponse(__('msgs.category_not_found') , 404);
             }
             $this->categoryRepository->destroyCategory($category);
-            return response()->apiSuccessResponse([], 'Category Deleted Successfully' , 200);
+            return response()->apiSuccessResponse([], __('msgs.category_deleted') , 200);
         } catch (\Exception $e) {
-            return response()->apiErrorResponse('Category not Deleted, Try again!', 500);
+            return response()->apiErrorResponse(__('msgs.internal_error'), 500);
         }
     }
 }

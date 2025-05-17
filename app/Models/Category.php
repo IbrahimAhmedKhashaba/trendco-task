@@ -32,8 +32,8 @@ class Category extends Model
     protected function status(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value) => $value == '1' ? 'active' : 'not active',
-            set: fn (string $value) => $value == 'active' ? 1 : 0,
+            get: fn(string $value) => $value == '1' ? __('attrs.active') : __('attrs.inactive'),
+            set: fn(string $value) => $value == 'active' ? 1 : 0,
         );
     }
 }

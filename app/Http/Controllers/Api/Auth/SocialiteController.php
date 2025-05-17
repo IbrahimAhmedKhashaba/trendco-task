@@ -3,18 +3,22 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Interfaces\Factories\SocialiteFactoryInterface;
 use Illuminate\Http\Request;
-use Laravel\Socialite\Facades\Socialite;
+
 
 class SocialiteController extends Controller
 {
     //
 
+    private $socialiteFactory;
+
+    public function __construct(SocialiteFactoryInterface $socialiteFactory){
+        $this->socialiteFactory = $socialiteFactory;
+    }
+
     public function getSocialiteLink($driver)
     {
-        $link = Socialite::driver($driver)->stateless()->redirect()->getTargetUrl();
-        return response()->apiSuccessResponse([
-            'link'  => $link,
-        ], ucfirst($driver).' Socialite Link');
+        return $this->socialiteFactory->create($driver)->getLink();
     }
 }

@@ -23,6 +23,8 @@ class OrderResource extends JsonResource
             'city_name' => $this->city_name,
             'address_name' => $this->address_name,
             'building_number' => $this->building_number,
+            'payment_method' => $this->when($this->payment_method, $this->payment_method),
+            'user' => $this->whenLoaded('user', $this->user),
             'products' => ProductResource::collection($this->products),
         ];
     }

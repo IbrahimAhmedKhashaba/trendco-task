@@ -19,39 +19,9 @@ class ProductController extends Controller
         return $this->productService->getAllProducts();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(ProductRequest $request)
-    {
-        //
-        return $this->productService->storeProduct($request->all());
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
         return $this->productService->getProductById($id);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-        return $this->productService->updateProductById($request->all() , $id);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-        return $this->productService->destroyProductById($id);
     }
 }

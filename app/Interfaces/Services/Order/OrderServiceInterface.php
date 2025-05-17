@@ -9,5 +9,6 @@ interface OrderServiceInterface{
     public function getAllOrders() : JsonResponse;
     public function getOrderById($id) : JsonResponse;
     public function storeOrder(array $data) : JsonResponse;
-    public function updateOrderStatusById(array $data, $id) : JsonResponse;
+    public function update(array $data, $id) : JsonResponse;
+    public function destroy($order);
 }

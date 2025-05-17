@@ -2,12 +2,11 @@
 
 namespace App\Repositories\Order;
 
-use App\Http\Resources\Order\OrderResource;
 use App\Interfaces\Repositories\Order\OrderRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Order;
 use App\Models\CartItem;
-use App\Traits\ImageManagementTrait;
+use App\Models\User;
 use Illuminate\Support\Str;
 
 
@@ -16,12 +15,12 @@ class OrderRepository implements OrderRepositoryInterface
     public function getAllOrders(): Collection
     {
         $user = $this->getUser();
-        return Order::where('user_id', $user->id)->get();
+        return Order::get();
     }
     public function getOrderById($id): ?Order
     {
-        $user = $this->getUser();
-        return Order::where('id' , $id)->where('user_id', $user->id)->first();
+        $order = Order::with('user')->whereId($id)->first();
+        return $order;
     }
     public function storeOrder($request): Order
     {
@@ -32,7 +31,6 @@ class OrderRepository implements OrderRepositoryInterface
             'city_name' => $request->city_name,
             'address_name' => $request->address_name,
             'building_number' => $request->building_number,
-            'payment_method' => $request->payment_method,
             'payment_status' => 'not paid',
             'status' => 'pending',
             'total' => 0,
@@ -48,12 +46,9 @@ class OrderRepository implements OrderRepositoryInterface
 
         return $order;
     }
-    public function updateOrderStatus($Order, $status): Order
+    public function update($Order, $data): Order
     {
-        $Order->update([
-            'order_status' => $status,
-        ]);
-
+        $Order->update($data);
         return $Order;
     }
 
@@ -63,12 +58,12 @@ class OrderRepository implements OrderRepositoryInterface
         return CartItem::where('user_id', $user->id)->get();
     }
 
-    public function getUser()
+    public function getUser():User
     {
         return auth()->user();
     }
 
-    public function calculateTotal($cartItems)
+    public function calculateTotal($cartItems):float
     {
         $total = 0;
         foreach ($cartItems as $item) {
@@ -82,7 +77,7 @@ class OrderRepository implements OrderRepositoryInterface
         return $order->update(['total' => $total]);
     }
 
-    public function storeOrderProducts($order, $cartItems)
+    public function storeOrderProducts($order, $cartItems):void
     {
         foreach ($cartItems as $item) {
             $subtotal = $item->qty * $item->price;
@@ -94,8 +89,19 @@ class OrderRepository implements OrderRepositoryInterface
         }
     }
 
-    public function clearCart(){
+    public function clearCart():void{
         $user = $this->getUser();
         CartItem::where('user_id', $user->id)->delete();
+    }
+
+    public function destroyOrder($order):void
+    {
+        if($order->payment_status == 'not paid'){
+            foreach($order->products as $product){
+                $product->increment('quantity', $product->pivot->quantity);
+            }
+        }
+        $order->products()->detach();
+        $order->delete();
     }
 }

@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\UserRegistered;
+use App\Http\Resources\User\UserResource;
 
 class VerificationController extends Controller
 {
@@ -22,12 +24,10 @@ class VerificationController extends Controller
 
             return response()->apiSuccessResponse([
                 'user' => $user,
-            ] , 'Email verified successfully');
+            ] , __('msgs.mail_verified'));
         }
 
-        return response()->apiErrorResponse([
-                'user' => $user,
-            ] , 'Something Wrong, Try again!');
+        return response()->apiErrorResponse(__('msgs.internal_error') , 500);
     }
 
     public function resend(Request $request)
@@ -35,15 +35,15 @@ class VerificationController extends Controller
         $user = $request->user();
 
         if ($user->hasVerifiedEmail()) {
-            return response()->apiErrorResponse('Your Email is already verified' , 400 , [
-                'user' => $user,
+            return response()->apiErrorResponse(__('msgs.mail_already_verified') , 400 , [
+                'user' => new UserResource($user),
             ]);
         }
 
-        $user->sendEmailVerificationNotification();
+        event(new UserRegistered($user));
 
         return response()->apiSuccessResponse([
-                'user' => $user,
-            ], 'A new verification Email has been sent to your email' , 200);
+                'user' => new UserResource($user),
+            ], __('msgs.verify_mail_send') , 200);
     }
 }

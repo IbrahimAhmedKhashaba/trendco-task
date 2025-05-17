@@ -23,16 +23,16 @@ class OrderService implements OrderServiceInterface
         $orders = $this->orderRepository->getAllOrders();
         return response()->apiSuccessResponse([
             'orders' => OrderResource::collection($orders),
-        ], 'Orders Data');
+        ], __('msgs.order_all_data'));
     }
     public function getOrderById($id): JsonResponse {
         $order = $this->orderRepository->getOrderById($id);
         if (!$order) {
-            return response()->apiErrorResponse('Order not found', 404);
+            return response()->apiErrorResponse(__('msgs.order_not_found'), 404);
         }
         return response()->apiSuccessResponse([
             'order' => new OrderResource($order),
-        ], 'Order Data');
+        ], __('msgs.order_data'));
     }
     public function storeOrder($request): JsonResponse
     {
@@ -40,7 +40,7 @@ class OrderService implements OrderServiceInterface
         $cartItems = $this->orderRepository->getCartItems();
 
         if ($cartItems->isEmpty()) {
-            return response()->json(['message' => 'Cart is empty'], 400);
+            return response()->apiErrorResponse(__('msgs.cart_empty'), 400);
         }
 
         DB::beginTransaction();
@@ -49,32 +49,42 @@ class OrderService implements OrderServiceInterface
             $order = $this->orderRepository->storeOrder($request);
             $this->orderRepository->clearCart();
             DB::commit();
-            return response()->json([
-                'message' => 'Order placed successfully',
+            return response()->apiSuccessResponse([
                 'order_id' => $order->id,
                 'order_number' => $order->order_number,
-            ], 201);
+            ],__('msgs.order_created') ,201);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'message' => 'Failed to place order',
-                'error' => $e->getMessage()
-            ], 500);
+            return response()->apiErrorResponse(__('msgs.internal_error'), 500);
         }
     }
-    public function updateOrderStatusById(array $data, $id): JsonResponse
+    public function update(array $data, $id): JsonResponse
     {
         try {
             $order = $this->orderRepository->getOrderById($id);
             if (!$order) {
-                return response()->apiErrorResponse('Order Not Found', 404);
+                return response()->apiErrorResponse(__('msgs.order_not_found'), 404);
             }
-            $order = $this->orderRepository->updateOrderStatus($order, $data['order_status']);
+            $order = $this->orderRepository->update($order, $data);
             return response()->apiSuccessResponse([
                 'Order' => new OrderResource($order),
-            ], 'Order Status Updated Successfully', 200);
+            ], __('msgs.order_updated'), 200);
         } catch (\Exception $e) {
-            return response()->apiErrorResponse('Order Status not Updated, Try again!', 500);
+            return response()->apiErrorResponse(__('msgs.internal_error'), 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $order = $this->orderRepository->getOrderById($id);
+            if (!$order) {
+                return response()->apiErrorResponse(__('msgs.order_not_found'), 404);
+            }
+            $order = $this->orderRepository->destroyOrder($order);
+            return response()->apiSuccessResponse([], __('msgs.order_deleted'), 200);
+        } catch (\Exception $e) {
+            return response()->apiErrorResponse(__('msgs.internal'), 500);
         }
     }
 }

@@ -21,27 +21,9 @@ class CategoryController extends Controller
         return $this->categoryService->getAllCategories();
     }
 
-    public function store(CategoryRequest $request): JsonResponse
-    {
-        //
-        return $this->categoryService->storeCategory($request->all());
-    }
-
     public function show(string $id): JsonResponse
     {
         //
         return $this->categoryService->getCategoryById($id);
-    }
-
-    public function update(CategoryRequest $request, string $id): JsonResponse
-    {
-        //
-        return $this->categoryService->updateCategoryById($request->all() , $id);
-    }
-
-    public function destroy(string $id): JsonResponse
-    {
-        //
-        return $this->categoryService->destroyCategoryById($id);
     }
 }

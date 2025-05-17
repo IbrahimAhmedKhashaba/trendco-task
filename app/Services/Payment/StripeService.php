@@ -45,19 +45,22 @@ class StripeService implements PaymentStrategyInterface
         ], 'Payment Url is ready');
     }
 
-    public function handle($request){
-        Log::info('payload' , [$request->all()]);
+    public function handle($request)
+    {
+        Log::info('payload', [$request->all()]);
         $payload = $request->getContent();
         $sigHeader = $request->header('Stripe-Signature');
         $secret = env('STRIPE_WEBHOOK_SECRET');
 
         try {
             $event = Webhook::constructEvent(
-                $payload, $sigHeader, $secret
+                $payload,
+                $sigHeader,
+                $secret
             );
-        } catch(\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException $e) {
             return response('Invalid payload', 400);
-        } catch(\Stripe\Exception\SignatureVerificationException $e) {
+        } catch (\Stripe\Exception\SignatureVerificationException $e) {
             return response('Invalid signature', 400);
         }
 
@@ -65,7 +68,10 @@ class StripeService implements PaymentStrategyInterface
             $session = $event->data->object;
             $orderId = $session->metadata->order_id;
             $order = Order::find($orderId);
-            $order->update(['payment_status' => 'paid']);
+            $order->update([
+                'payment_status' => 'paid',
+                'payment_method' => 'stripe',
+            ]);
         }
 
         return response()->json(['status' => 'success'], 200);

@@ -8,9 +8,6 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class OrderRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
@@ -22,7 +19,6 @@ class OrderRequest extends FormRequest
             'city_name' => ['required', 'string', 'max:255'],
             'address_name' => ['required', 'string', 'max:255'],
             'building_number' => ['required', 'string', 'max:50'],
-            'payment_method' => ['required', 'in:stripe,paypal,delivery'],
         ];
 
         if(request()->isMethod('put')){

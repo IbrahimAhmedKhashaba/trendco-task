@@ -1,16 +1,20 @@
-<?php  
+<?php
 
 
 namespace App\Interfaces\Repositories\Cart;
 
+use App\Models\CartItem;
+use Illuminate\Database\Eloquent\Collection;
 
 
-interface CartRepositoryInterface{
-     public function storeCartItems($item);
 
-    public function getCartItems();
+interface CartRepositoryInterface
+{
+    public function storeCartItems($item): ?CartItem;
 
-    public function updateCartItem($item , $qty);
-    public function deleteCartItem($item);
-    public function clearCart($user);
+    public function getCartItems(): Collection;
+
+    public function updateCartItem($item, $qty): ?CartItem;
+    public function deleteCartItem($item): bool;
+    public function clearCart($user): bool;
 }

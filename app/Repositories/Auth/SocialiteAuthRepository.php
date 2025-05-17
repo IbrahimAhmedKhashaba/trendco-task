@@ -16,17 +16,16 @@ class SocialiteAuthRepository implements SocialiteAuthRepositoryInterface
         $user = User::updateOrCreate(
             ['email' => $data['email']],
             [
-                'name' => $data['given_name'] . ' ' . $data['family_name'],
-                'provider_id' => $data['sub'],
-                'image' => $data['picture'],
+                'name' => $data['name'],
+                'provider_id' => $data['id'],
                 'password' => bcrypt(Str::random(24)),
                 'email_verified_at' => now(),
             ]
         );
 
         $user->image()->create([
-            'url' => $data['picture'],
-            'alt_text' => 'Personal Avatar',
+            'url' => $data['avatar'],
+            'alt_text' => $data['name'].' Avatar',
         ]);
 
         return $user;

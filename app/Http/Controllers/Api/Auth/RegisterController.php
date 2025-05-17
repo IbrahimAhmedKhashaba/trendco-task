@@ -32,13 +32,12 @@ class RegisterController extends Controller
         try {
             $strategy = $this->factory->create($this->provider);
             $data = $strategy->register($request->all());
-            Auth::login($data['user']);
 
             return response()->apiSuccessResponse([
-                'user'  => $data['user'],
-            ], 'Registration Success');
+                'data'  => $data,
+            ], __('msgs.register_success'));
         } catch (\Exception $e) {
-            return response()->apiErrorResponse('Internal server error', 500);
+            return response()->apiErrorResponse(__('msgs.internal_error'), 500);
         }
     }
 }

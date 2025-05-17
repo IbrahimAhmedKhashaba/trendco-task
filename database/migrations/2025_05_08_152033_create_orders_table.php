@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('order_number', 255);
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('order_status', ["pending", "shipped", "delivered"])->default("pending");
-            $table->enum('payment_method', ['stripe', 'paypal' , 'delivery'])->default('delivery');
+            $table->enum('payment_method', ['stripe', 'paypal'])->nullable();
             $table->boolean('payment_status')->default(0);
             $table->string('city_name');
             $table->string('address_name');

@@ -24,21 +24,26 @@ class CartService implements CartServiceInterface
         try {
             $product = Product::find($request->id);
             if (!$product) {
-                return response()->apiErrorResponse('المنتج غير موجود', 404);
+                return response()->apiErrorResponse(__('msgs.product_not_found'), 404);
+            }
+            if ($product->quantity < $request->qty) {
+                return response()->apiErrorResponse(__('msgs.product_quantity_not_enough'), 400);
             }
             $item = Cart::add([
                 'id' => $product->id,
                 'name' => $product->name,
                 'qty' => $request->qty ?? 1,
-                'price' => $product->price,
+                'price' => $product->has_discount ? $product->discounted_price : $product->price,
                 'options' => ['images' => $product->images]
             ]);
 
+            $product->quantity -= $request->qty;
+            $product->save();
             $item = $this->cartRepository->storeCartItems($item);
 
-            return response()->apiSuccessResponse(['item' => new CartResource($item)], 'تم اضافة المنتج بنجاح', 201);
+            return response()->apiSuccessResponse(['item' => new CartResource($item)], __('msgs.cart_created'), 201);
         } catch (\Exception $e) {
-            return response()->apiErrorResponse('المنتج موجود بالفعل', 401);
+            return response()->apiErrorResponse(__('msgs.cart_found'), 401);
         }
     }
 
@@ -53,7 +58,7 @@ class CartService implements CartServiceInterface
         return response()->apiSuccessResponse([
             'items' => CartResource::collection($items),
             'total' => number_format($total, 2)
-        ] , 'Cart Items');
+        ], __('msgs.cart_all_data'));
     }
 
     public function update($request, $rowId)
@@ -64,31 +69,40 @@ class CartService implements CartServiceInterface
 
         $qty = $request->qty;
 
+        
+
         $item = CartItem::where('row_id', $rowId)->where('user_id', auth()->id())->first();
 
 
         if (!$item) {
-            return response()->apiErrorResponse('المنتج غير موجود في السلة', 404);
+            return response()->apiErrorResponse(__('msgs.cart_not_found'), 404);
         }
+
+        $product = $item->product;
+        $product->quantity = $product->quantity - $request->qty + $item->qty;
+        if($product->quantity < 0){
+            return response()->apiErrorResponse(__('msgs.product_quantity_not_enough'), 400);
+        }
+        $product->save();
 
         $item = $this->cartRepository->updateCartItem($item, $qty);
 
 
         return response()->apiSuccessResponse([
             'item' => new CartResource($item),
-        ] , 'Cart Item Updated');
+        ], __('msgs.cart_updated'));
     }
 
     public function remove($rowId)
     {
         $item = CartItem::where('row_id', $rowId)->where('user_id', auth()->id())->first();
         if (!$item) {
-            return response()->apiErrorResponse('المنتج غير موجود في السلة', 404);
+            return response()->apiErrorResponse(__('msgs.product_not_found'), 404);
         }
 
         $this->cartRepository->deleteCartItem($item);
 
-        return response()->apiSuccessResponse([] , 'Cart Item Deleted');
+        return response()->apiSuccessResponse([], __('msgs.cart_deleted'));
     }
 
     public function clear()
@@ -96,7 +110,7 @@ class CartService implements CartServiceInterface
         $user = $this->getUser();
         Cart::destroy();
         $this->cartRepository->clearCart($user);
-        return response()->apiSuccessResponse([] , 'Cart Cleared');
+        return response()->apiSuccessResponse([], __('msgs.cart_cleared'));
     }
 
     public function getUser()

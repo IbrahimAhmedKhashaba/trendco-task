@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Product;
 
 use App\Http\Resources\Category\CategoryResource;
+use App\Http\Resources\Image\ImageResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -23,8 +24,17 @@ class ProductResource extends JsonResource
             'discounted_price'  => $this->discounted_price,
             'quantity'  => $this->quantity,
             'status'  => $this->status,
-            'images' => $this->whenLoaded('images') ? $this->images:'',
-            'categories' => $this->whenLoaded('categories') ? CategoryResource::collection($this->categories):'',
+            'has_discount'  => $this->has_discount,
+            'images' => $this->whenLoaded('images', function () {
+                return [
+                    'path' => asset('uploads/products'),
+                    'images' => ImageResource::collection($this->images),
+                ];
+            }),
+
+            'categories' => $this->whenLoaded('categories', function () {
+                return CategoryResource::collection($this->categories);
+            }),
         ];
     }
 }

@@ -32,17 +32,20 @@ class ProductService implements ProductServiceInterface
                 'prev' => $products->previousPageUrl(),
                 'next' => $products->nextPageUrl(),
             ],
-        ], 'Products Data');
+        ], __('msgs.product_all_data'));
     }
     public function getProductById($id): JsonResponse
     {
         try {
             $Product = $this->ProductRepository->getProductById($id);
+            if(!$Product){
+                return response()->apiErrorResponse(__('msgs.product_not_found'), 404);
+            }
             return response()->apiSuccessResponse([
                 'Product' => new ProductResource($Product),
-            ], 'Product data');
+            ], __('msgs.product_data'));
         } catch (\Exception $e) {
-            return response()->apiErrorResponse('Product not found', 404);
+            return response()->apiErrorResponse(__('msgs.internal_error'), 500);
         }
     }
     public function storeProduct(array $data): JsonResponse
@@ -51,9 +54,9 @@ class ProductService implements ProductServiceInterface
             $Product = $this->ProductRepository->storeProduct($data);
             return response()->apiSuccessResponse([
                 'Product' => new ProductResource($Product),
-            ], 'Product Created Successfully', 201);
+            ], __('msgs.product_created'), 201);
         } catch (\Exception $e) {
-            return response()->apiErrorResponse('Product not created, Try again!', 500);
+            return response()->apiErrorResponse(__('msgs.internal_error'), 500);
         }
     }
     public function updateProductById(array $data, $id): JsonResponse
@@ -61,14 +64,14 @@ class ProductService implements ProductServiceInterface
         try {
             $Product = $this->ProductRepository->getProductById($id);
             if (!$Product) {
-                return response()->apiErrorResponse('Product Not Found', 404);
+                return response()->apiErrorResponse(__('msgs.product_not_found'), 404);
             }
             $Product = $this->ProductRepository->updateProduct($Product, $data);
             return response()->apiSuccessResponse([
                 'Product' => new ProductResource($Product),
-            ], 'Product Updated Successfully', 200);
+            ], __('msgs.product_updated'), 200);
         } catch (\Exception $e) {
-            return response()->apiErrorResponse('Product not Updated, Try again!', 500);
+            return response()->apiErrorResponse(__('msgs.internal_error'), 500);
         }
     }
     public function destroyProductById($id): JsonResponse
@@ -76,12 +79,12 @@ class ProductService implements ProductServiceInterface
         try {
             $Product = $this->ProductRepository->getProductById($id);
             if (!$Product) {
-                return response()->apiErrorResponse('Product Not Found', 404);
+                return response()->apiErrorResponse(__('msgs.product_not_found'), 404);
             }
             $this->ProductRepository->destroyProduct($Product);
-            return response()->apiSuccessResponse([], 'Product Deleted Successfully', 200);
+            return response()->apiSuccessResponse([], __('msgs.product_deleted'), 200);
         } catch (\Exception $e) {
-            return response()->apiErrorResponse('Product not Deleted, Try again!', 500);
+            return response()->apiErrorResponse(__('msgs.internal_error'), 500);
         }
     }
 }

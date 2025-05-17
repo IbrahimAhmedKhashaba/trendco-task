@@ -8,19 +8,11 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ProductRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         $data = [
@@ -46,20 +38,6 @@ class ProductRequest extends FormRequest
 
         return $data;
     }
-
-    public function messages(): array
-    {
-        $data = [
-            'name.required' => 'Name is required',
-            'name.array' => 'Name must be an array',
-            'name.unique' => 'Name must be unique',
-            'name.*.required' => 'Name is required',
-            'status' => 'required|in:active,inactive',
-        ];
-
-        return $data;
-    }
-
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->apiErrorResponse('Validation errors' , 422 , [

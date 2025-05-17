@@ -8,14 +8,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Notifications\Auth\CustomVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
+use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Notifications\CustomVerifyEmail;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmailContract
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable , HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens;
+    use MustVerifyEmail;
 
     /**
      * The attributes that are mass assignable.
@@ -53,12 +56,8 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function sendEmailVerificationNotification()
+    public function order()
     {
-        $this->notify(new CustomVerifyEmail);
-    }
-
-    public function order(){
         return $this->hasOne(Order::class);
     }
 
@@ -75,5 +74,12 @@ class User extends Authenticatable implements MustVerifyEmail
     public function scopeUser(Builder $query): Builder
     {
         return $query->where('is_admin', '0');
+    }
+
+    
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new CustomVerifyEmail);
     }
 }

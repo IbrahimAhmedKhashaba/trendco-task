@@ -7,20 +7,24 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoryResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
-        return [
+        $data = [
             'id'    => $this->id,
             'name'  => $this->name,
             'description'  => $this->description,
             'status'  => $this->status,
-            'image_url' => $this->whenLoaded('image') ? $this->image->url : null,
-            // 'created_at' => $this->created_at->toDateTimeString(),
+            'image' => $this->whenLoaded('image' , function(){
+                return asset('uploads/categories/'.$this->image->url);
+            })
         ];
+
+        if(request()->routeIs('admin.categories.index')) {
+            $data['status'] = $this->status;
+            $data['created_at'] = $this->created_at->format('Y-m-d H:i:s');
+            $data['updated_at'] = $this->updated_at->format('Y-m-d H:i:s');
+        }
+
+        return $data;
     }
 }

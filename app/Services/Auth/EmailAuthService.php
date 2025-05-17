@@ -7,6 +7,7 @@ use App\Interfaces\Services\Auth\AuthStrategyInterface;
 use App\Notifications\Auth\CustomVerifyEmail;
 use App\Traits\ImageManagementTrait;
 use Illuminate\Auth\Events\Registered;
+use App\Events\UserRegistered;
 
 class EmailAuthService implements AuthStrategyInterface{
     use ImageManagementTrait;
@@ -19,8 +20,7 @@ class EmailAuthService implements AuthStrategyInterface{
     public function register(array $data): array
     {
         $user = $this->emailAuthRepository->register($data);
-        $user->notify(new CustomVerifyEmail());
-
+        event(new UserRegistered($user));
         return [
             'user' => $user,
         ];

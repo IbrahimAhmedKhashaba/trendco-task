@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Interfaces\Services\Admin\AdminServiceInterface;
 use Illuminate\Http\Request;
 
@@ -17,37 +18,14 @@ class AdminController extends Controller
         //
         return $this->adminService->index();
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(RegisterRequest $request)
     {
         //
+        return $this->adminService->store($request);
     }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
         return $this->adminService->show($id);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

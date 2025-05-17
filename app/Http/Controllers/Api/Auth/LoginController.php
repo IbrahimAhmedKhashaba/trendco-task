@@ -27,7 +27,7 @@ class LoginController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return response()->apiErrorReponse(__('msgs.invalid_credentials'), 401);
         }
 
         $token = $user->createToken('api-token')->plainTextToken;
@@ -36,12 +36,12 @@ class LoginController extends Controller
         return response()->apiSuccessResponse([
             'user' => $user,
             'token' => $token,
-        ], 'Login successful');
+        ], __('msgs.login_success'));
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-        return response()->apiSuccessResponse(null, 'Logged out successfully');
+        return response()->apiSuccessResponse(null, __('msgs.logout_success'));
     }
 }
