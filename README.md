@@ -1,12 +1,14 @@
+Trendco Task
+
 🔐 Authentication System
 
 The authentication system is designed with flexibility and extensibility in mind using key design patterns:
 
-Strategy Pattern: Used to support multiple authentication methods, including traditional email/password login and social media login (e.g., Google). This allows adding new providers like Facebook without modifying the core authentication logic.
+Strategy Pattern:Supports multiple authentication methods, including traditional email/password login and social media login (e.g., Google). This allows adding new providers like Facebook without modifying the core authentication logic.
 
-Factory Pattern: Responsible for returning the appropriate class instance based on the authentication method, enabling a clean and decoupled implementation.
+Factory Pattern:Returns the appropriate class instance based on the authentication method, enabling a clean and decoupled implementation.
 
-Email Verification:
+Email Verification
 
 For traditional email sign-ups, users must verify their email address.
 
@@ -14,116 +16,170 @@ Email verification uses Laravel Events, Jobs, and Notifications to send a verifi
 
 Users can also resend the verification email if needed.
 
-Clean Architecture:
+Clean Architecture
 
-Authentication logic is abstracted using Repository and Service Layers, ensuring a separation of concerns and making the codebase easy to maintain and test.
+Authentication logic is abstracted using Repository and Service Layers, ensuring separation of concerns and easy maintainability.
 
-This approach ensures the authentication module is scalable, testable, and ready for production use.
-
-
+This approach ensures the authentication module is scalable, testable, and production-ready.
 
 🛠️ Admin Panel
+
 The Admin Panel provides a comprehensive management interface allowing administrators to efficiently oversee key aspects of the application:
 
-Category Management: Admins can create, update, delete, and organize product categories to keep the catalog structured and up-to-date.
+Category Management: Create, update, delete, and organize product categories.
 
-Product Management: Full control over products, including adding new items, editing existing ones, and removing outdated or discontinued products.
+Product Management: Add, edit, and remove products.
 
-Order Status Management: Ability to modify and track order statuses throughout the order lifecycle, ensuring smooth processing and accurate customer updates.
+Order Status Management: Modify and track order statuses during the order lifecycle.
 
-User Management: Admins can manage user accounts, including viewing, editing, and controlling access levels.
+User Management: Manage user accounts and control access levels.
 
-This section is designed to empower admins with all necessary tools for effective backend management, built with a focus on security, usability, and scalability.
+Admin Roles & Permissions: Manage administrators and assign roles securely.
 
+Designed with a focus on security, usability, and scalability.
 
 👤 User Features
 
-The User module offers a seamless and intuitive experience for customers to interact with the platform:
+The User module offers a seamless and intuitive experience for customers:
 
-Browse Categories and Products: Users can easily explore all available product categories and view detailed information about each product.
+Browse Categories and Products: Explore categories and detailed product info.
 
-Profile Management: Users can view and update their profile information to keep their account details current.
+Profile Management: View and update user profile details.
 
-Shopping Cart Management: Users can add products to the cart, update quantities, remove items, and review the cart contents before checkout.
+Shopping Cart Management: Add, update, remove products, and review cart contents.
 
-Secure Payments: Supports payment processing through popular gateways such as PayPal and Stripe, ensuring a smooth and secure checkout experience.
+Secure Payments: Supports payments via PayPal and Stripe.
 
-This module focuses on usability and security, providing users with all the tools they need for effortless shopping and account management.
+Focus on usability and security for effortless shopping.
 
+💳 Application Architecture
 
-💳 Payment Gateways & Application Architecture
+Payment Gateways Handling:Implemented using Strategy and Factory patterns for easy addition or switching of gateways like PayPal and Stripe without changing existing code.
 
-Payment Gateways Handling:
-Payment processing is implemented using the Strategy and Factory design patterns. This approach provides flexibility to easily add or switch payment gateways (e.g., PayPal, Stripe) in the future without modifying existing code.
+Dependency Injection:Used across the application to promote loose coupling, easier testing, and maintainability.
 
-Dependency Injection:
-The entire application leverages Dependency Injection to promote loose coupling and enhance testability and maintainability.
+Repository and Service Layers:Abstract business logic and data access via interfaces, facilitating clean architecture and testability.
 
-Repository and Service Layers:
-Business logic and data access are abstracted via Repository and Service layers, using interfaces to ensure clear contracts and facilitate easy swapping or mocking during testing.
-
-This clean and modular architecture ensures the codebase remains scalable, maintainable, and easy to extend as the application grows.
+This ensures scalability, maintainability, and extensibility.
 
 ⚙️ Asynchronous Processing & Notifications
-The application employs Laravel's powerful features for handling background tasks and user notifications efficiently:
 
-Jobs & Queues:
+Jobs & Queues:Background tasks (e.g., sending emails) are handled asynchronously with Laravel Queues, improving responsiveness.
 
-Time-consuming tasks like sending emails or processing heavy operations are offloaded to background Jobs using Laravel's Queue system, improving app responsiveness and user experience.
+Events & Listeners:Business events trigger decoupled listeners for clean and maintainable code.
 
-Events & Listeners:
+Notifications:Users receive notifications via email, database, and other channels for events like email verification and order updates.
 
-Business events trigger Events that are handled by Listeners to decouple different parts of the application and promote clean, maintainable code.
-
-Notifications:
-
-Users receive timely notifications via multiple channels (email, database, etc.) to keep them informed about important actions like email verification, order updates, and more.
-
-This architecture ensures smooth, scalable, and user-friendly operations without blocking the main application flow.
+This setup ensures smooth, scalable, and user-friendly operations.
 
 ⚙️ Installation & Setup
-This section guides you through setting up the project and configuring essential integrations:
 
-Queue Configuration:
-The application uses Laravel’s database queue driver to handle background jobs reliably. Make sure to run the necessary migrations to create the jobs table:
+Follow these steps to set up the project and configure essential integrations:
 
-bash
-نسخ
-تحرير
+Queue Configuration
+
+Uses Laravel’s database queue driver for background jobs.
+
+Run migrations to create the jobs table:
+
 php artisan queue:table
 php artisan migrate
-Then, start the queue worker:
 
-bash
-نسخ
-تحرير
-php artisan queue:work
-Payment Gateways Integration:
-The system integrates both PayPal and Stripe payment gateways. Configure the API credentials in the .env file to enable smooth payment processing.
+Payment Gateways Integration
 
-Social Authentication:
-Google OAuth integration is set up to allow users to log in using their Google accounts. Proper credentials must be configured in the .env file and on the Google Developer Console.
+PayPal Setup
 
-General Setup:
+Create a PayPal developer account at PayPal Developer.
 
-Clone the repository.
+Create a new REST API app to obtain your Client ID and Secret.
 
-Run composer install to install PHP dependencies.
+Add credentials to your .env file:
 
-Set up your .env file with database and service credentials.
+PAYPAL_SANDBOX_CLIENT_ID=your-client-id
+PAYPAL_SECRET=your-secret
+PAYPAL_SANDBOX_CLIENT_SECRET=sandbox
+PAYPAL_MODE=sandbox
+PAYPAL_CURRENCY=USD
+PAYPAL_SUCCESS_URL=https://your-domain.com/payment/success
+PAYPAL_CANCEL_URL=https://your-domain.com/payment/cancel
 
-Run database migrations and seeders:
+Set up webhook in PayPal dashboard with the following events:
 
-bash
-نسخ
-تحرير
+Checkout order approved
+
+Payment capture completed
+
+Payment capture denied
+
+Webhook URL example:
+
+https://your-ngrok-domain/api/payment/handle?method=paypal
+
+Stripe Setup
+
+Create a Stripe account at Stripe Dashboard.
+
+Retrieve your Publishable Key and Secret Key.
+
+Add credentials to your .env file:
+
+STRIPE_PUBLIC=your-publishable-key
+STRIPE_SECRET=your-secret-key
+STRIPE_CURRENCY=usd
+STRIPE_SUCCESS_URL=https://your-domain.com/payment/success
+STRIPE_CANCEL_URL=https://your-domain.com/payment/cancel
+STRIPE_WEBHOOK_SECRET=your-webhook-secret
+
+Set up webhook in Stripe dashboard tracking events:
+
+Checkout order approved
+
+Payment capture completed
+
+Payment capture denied
+
+Webhook URL example:
+
+https://your-ngrok-domain/api/payment/handle
+
+Google OAuth Setup
+
+Go to Google Cloud Console.
+
+Create OAuth 2.0 Client ID credentials.
+
+Set authorized redirect URI:
+
+http://localhost:8000/api/auth/register?provider=google
+
+Add credentials to your .env file:
+
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+GOOGLE_REDIRECT_URI=http://localhost:8000/api/auth/register?provider=google
+
+General Setup
+
+Clone the repository:
+
+git clone https://github.com/yourusername/yourproject.git
+cd yourproject
+
+Install PHP dependencies:
+
+composer install
+
+Set up .env with database, payment, and OAuth credentials.
+
+Run migrations and seeders:
+
 php artisan migrate --seed
-Serve the application:
 
-bash
-نسخ
-تحرير
+Start the Laravel development server:
+
 php artisan serve
-Following these steps will get your environment ready with all the necessary features working seamlessly.
 
+Start the queue worker:
+
+php artisan queue:work
 
