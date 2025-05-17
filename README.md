@@ -1,111 +1,159 @@
-🛍️ Trendco Project
-🔐 Authentication System
-Authentication is designed with flexibility and extensibility in mind using key design patterns:
+# 🛍️ Trendco Project
 
-Strategy Pattern
-Supports multiple authentication methods (e.g., email/password, Google OAuth). Easily extendable to Facebook, etc.
+## 🔐 Authentication System
 
-Factory Pattern
-Returns the appropriate authentication handler class, keeping the code clean and decoupled.
+Authentication is designed with **flexibility** and **extensibility** in mind using key design patterns:
 
-✅ Email Verification
-Email verification is required for traditional sign-ups.
+- **Strategy Pattern**  
+  Supports multiple authentication methods (e.g., email/password, Google OAuth). Easily extendable to Facebook, etc.
 
-Handled using Events, Jobs, and Notifications.
+- **Factory Pattern**  
+  Returns the appropriate authentication handler class, keeping the code clean and decoupled.
 
-Users can resend the verification email anytime.
+### ✅ Email Verification
 
-🧱 Clean Architecture
-Repository & Service Layers ensure separation of concerns.
+- Email verification is required for traditional sign-ups.
+- Handled using **Events**, **Jobs**, and **Notifications**.
+- Users can **resend** the verification email anytime.
 
-Enhances testability, scalability, and maintainability.
+### 🧱 Clean Architecture
 
-🛠️ Admin Panel
+- **Repository & Service Layers** ensure separation of concerns.
+- Enhances **testability**, **scalability**, and **maintainability**.
+
+---
+
+## 🛠️ Admin Panel
+
 A powerful backend management interface to control the system:
 
-🗂️ Category Management
+- 🗂️ **Category Management**
+- 📦 **Product Management**
+- 📬 **Order Status Management**
+- 👤 **User Management**
+- 🔐 **Admin Roles & Permissions**
 
-📦 Product Management
+Built with a focus on **security**, **usability**, and **scalability**.
 
-📬 Order Status Management
+---
 
-👤 User Management
+## 👤 User Features
 
-🔐 Admin Roles & Permissions
-
-Built with a focus on security, usability, and scalability.
-
-👤 User Features
 Designed for a smooth user experience:
 
-🔍 Browse Products & Categories
+- 🔍 **Browse Products & Categories**
+- 👤 **Profile Management**
+- 🛒 **Shopping Cart**
+- 💳 **Secure Payments** via PayPal & Stripe
 
-👤 Profile Management
+Focus on **usability** and **security** for effortless shopping.
 
-🛒 Shopping Cart
+---
 
-💳 Secure Payments via PayPal & Stripe
+## 💳 Application Architecture
 
-Focus on usability and security for effortless shopping.
+- 🧠 **Payment Gateways** handled using **Strategy** and **Factory** patterns.
+- 💉 **Dependency Injection** used across the app for testability and flexibility.
+- 🧱 **Repository/Service Layers** for clean separation of logic.
 
-💳 Application Architecture
-🧠 Payment Gateways handled using Strategy and Factory patterns.
+This architecture ensures **extensibility**, **maintainability**, and **scalability**.
 
-💉 Dependency Injection used across the app for testability and flexibility.
+---
 
-🧱 Repository/Service Layers for clean separation of logic.
+## 📩 Asynchronous Processing & Notifications
 
-This architecture ensures extensibility, maintainability, and scalability.
+- ⚙️ **Jobs & Queues**: Send emails and handle background tasks without blocking.
+- 📡 **Events & Listeners**: Decoupled business logic.
+- 🔔 **Notifications**: Email, database, etc., for user events like order updates or email verification.
 
-📩 Asynchronous Processing & Notifications
-⚙️ Jobs & Queues: Send emails and handle background tasks without blocking.
+---
 
-📡 Events & Listeners: Decoupled business logic.
+## ⚙️ Installation & Setup
 
-🔔 Notifications: Email, database, etc., for user events like order updates or email verification.
+### 🧵 Queue Configuration
 
-⚙️ Installation & Setup
-🧵 Queue Configuration
+```bash
 php artisan queue:table
 php artisan migrate
 php artisan queue:work
-💰 Payment Gateways Integration
-🔹 PayPal
-Create Developer Account
+```
 
-Add to .env:
+---
+
+### 💰 Payment Gateways Integration
+
+#### 🔹 PayPal
+
+1. [Create Developer Account](https://developer.paypal.com/)
+2. Add to `.env`:
+
+```env
 PAYPAL_SANDBOX_CLIENT_ID=your-client-id
 PAYPAL_SECRET=your-secret
+PAYPAL_SANDBOX_CLIENT_SECRET=sandbox
 PAYPAL_MODE=sandbox
 PAYPAL_CURRENCY=USD
-...
-Webhook URL example:
-https://your-ngrok-domain/api/payment/handle?method=paypal
-🔸 Stripe
-Create Stripe Account
+PAYPAL_SUCCESS_URL=https://your-domain.com/payment/success
+PAYPAL_CANCEL_URL=https://your-domain.com/payment/cancel
+```
 
-Add to .env:
+3. Webhook URL example:
+
+```
+https://your-ngrok-domain/api/payment/handle?method=paypal
+```
+
+#### 🔸 Stripe
+
+1. [Create Stripe Account](https://dashboard.stripe.com/)
+2. Add to `.env`:
+
+```env
 STRIPE_PUBLIC=your-publishable-key
 STRIPE_SECRET=your-secret-key
-...
-Webhook URL example:
+STRIPE_CURRENCY=usd
+STRIPE_SUCCESS_URL=https://your-domain.com/payment/success
+STRIPE_CANCEL_URL=https://your-domain.com/payment/cancel
+STRIPE_WEBHOOK_SECRET=your-webhook-secret
+```
+
+3. Webhook URL example:
+
+```
 https://your-ngrok-domain/api/payment/handle
-🔑 Google OAuth
-Create OAuth Credentials
+```
 
-Set redirect URI:
+---
 
+### 🔑 Google OAuth
+
+1. [Create OAuth Credentials](https://console.cloud.google.com/)
+2. Set redirect URI:
+
+```
 http://localhost:8000/api/auth/register?provider=google
-Add to .env:
-GOOGLE_CLIENT_ID=your-client-id
-GOOGLE_CLIENT_SECRET=your-secret
-🧰 General Setup
+```
 
+3. Add to `.env`:
+
+```env
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+GOOGLE_REDIRECT_URI=http://localhost:8000/api/auth/register?provider=google
+```
+
+---
+
+### 🧰 General Setup
+
+```bash
 git clone https://github.com/yourusername/yourproject.git
 cd yourproject
 composer install
 php artisan migrate --seed
 php artisan serve
+php artisan queue:work
+```
 
 ---
 
