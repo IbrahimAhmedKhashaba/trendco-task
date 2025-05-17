@@ -166,3 +166,11 @@ If you encounter any issues or have any questions, feel free to reach out:
 - 📱 WhatsApp: [+201124782711](https://wa.me/201124782711)
 
 I'm happy to help anytime!
+
+---
+
+## 📫 Postman Collection
+
+You can explore and test the API using the official Postman collection:
+
+👉 [Click here to open the Postman Collection](https://documenter.getpostman.com/view/40282253/2sB2qWHjSP)
