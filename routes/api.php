@@ -28,7 +28,7 @@ Route::middleware('set_locale')->group(function () {
 
         Route::controller(VerificationController::class)->group(function () {
             Route::get('email/verify/{id}/{hash}', 'verify')
-                // ->middleware(['signed'])
+                ->middleware(['signed'])
                 ->name('verify');
             Route::post('email/resend', 'resend')
                 ->middleware('auth:sanctum');
