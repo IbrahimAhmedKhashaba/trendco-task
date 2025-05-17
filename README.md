@@ -68,6 +68,50 @@ This architecture ensures **extensibility**, **maintainability**, and **scalabil
 
 ---
 
+## 🖼️ Image Management with Polymorphic Relations
+
+The application uses **Polymorphic Relationships** in Laravel to manage images across multiple models (e.g., products, categories, users) efficiently.
+
+### ✅ Why Polymorphic?
+
+Instead of creating separate image tables or foreign keys for each model, polymorphic relations allow:
+
+- Reusability: One `images` table can be linked to multiple models.
+- Scalability: Easily associate images with any new model in the future.
+- Clean Design: Reduces duplication and keeps the database structure elegant.
+
+### 🧱 Example Schema
+
+```php
+// images table
+Schema::create('images', function (Blueprint $table) {
+    $table->id();
+    $table->string('url');
+    $table->morphs('imageable'); // adds imageable_id and imageable_type
+    $table->timestamps();
+});
+```
+
+### 🧩 Usage in Models
+
+```php
+// Product.php
+public function images()
+{
+    return $this->morphMany(Image::class, 'imageable');
+}
+
+// Category.php
+public function images()
+{
+    return $this->morphMany(Image::class, 'imageable');
+}
+```
+
+This design pattern ensures that the image system is **flexible**, **maintainable**, and **future-proof**.
+
+---
+
 ## ⚙️ Installation & Setup
 
 ### 🧵 Queue Configuration
