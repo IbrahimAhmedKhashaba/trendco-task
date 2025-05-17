@@ -212,7 +212,9 @@ You can explore and test the API using the official Postman collection:
 The API supports multilingual responses.
 
 To receive responses in Arabic, simply include the following header in your HTTP requests:
+
 Accept-Language: ar
+
 👉 If not provided, the default language will be English.
 
 ---
